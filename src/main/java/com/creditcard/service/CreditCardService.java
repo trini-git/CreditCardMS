@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.creditcard.model.CreditCardModel;
+import com.creditcard.model.PayAndConsumeModel;
 import com.creditcard.repository.CreditCardRepositoryInterface;
 
 import reactor.core.publisher.Mono;
@@ -21,10 +22,11 @@ public class CreditCardService implements CreditCardServiceInterface {
 	}
 
 	@Override
-	public Mono<CreditCardModel> updateAvalibleAmount(CreditCardModel newCreditCardModel, String creditCardNumber) {
+	public Mono<CreditCardModel> updateConsumeAvalibleAmount(CreditCardModel newCreditCardModel) {
 				
-		return findByCreditCardNumber(creditCardNumber)
+		return findByCreditCardNumber(newCreditCardModel.getCreditCardNumber())
 			.flatMap(oldCreditCardModel -> {
+				
 				double oldAvalibleAmount = oldCreditCardModel.getAvalibleAmount();
 				double newAvalibleAmount = newCreditCardModel.getAvalibleAmount();
 				
@@ -32,9 +34,27 @@ public class CreditCardService implements CreditCardServiceInterface {
 					oldCreditCardModel.setAvalibleAmount(oldAvalibleAmount - newAvalibleAmount);
 					return creditCardRepositoryInterface.save(oldCreditCardModel);
 				}
-				return Mono.error(new Exception("Cash is not enough"));				
+				return Mono.empty();				
 		});
 
+	}
+	
+	@Override
+	public Mono<CreditCardModel> updatePayAvalibleAmount(CreditCardModel newCreditCardModel) {
+		
+		return findByCreditCardNumber(newCreditCardModel.getCreditCardNumber())
+			.flatMap(oldCreditCardModel -> {
+				
+				double oldCreditLimit = oldCreditCardModel.getCreditLimit();
+				double oldAvalibleAmount = oldCreditCardModel.getAvalibleAmount();
+				double newAvalibleAmount = newCreditCardModel.getAvalibleAmount();
+				
+				if (oldAvalibleAmount + newAvalibleAmount <= oldCreditLimit) {
+					oldCreditCardModel.setAvalibleAmount(oldAvalibleAmount + newAvalibleAmount);
+					return creditCardRepositoryInterface.save(oldCreditCardModel);
+				}
+				return Mono.empty();
+			});
 	}
 
 	@Override

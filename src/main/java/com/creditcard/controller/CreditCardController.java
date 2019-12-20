@@ -35,10 +35,17 @@ public class CreditCardController {
 		
 	}
 	
-	@PutMapping("/update/{creditCardNumber}")
-	public Mono<CreditCardModel> updateAvalibleAmount (@RequestBody CreditCardModel creditCardModel, @PathVariable String creditCardNumber){
+	@PutMapping("/update-consume")
+	public Mono<CreditCardModel> updateConsumeAvalibleAmount (@RequestBody CreditCardModel creditCardModel){
 		
-		return creditCardService.updateAvalibleAmount(creditCardModel, creditCardNumber);
+		return creditCardService.updateConsumeAvalibleAmount(creditCardModel);
+		
+	}
+	
+	@PutMapping("/update-pay")
+	public Mono<CreditCardModel> updatePayAvalibleAmount (@RequestBody CreditCardModel creditCardModel){
+		
+		return creditCardService.updatePayAvalibleAmount(creditCardModel);
 		
 	}
 }
