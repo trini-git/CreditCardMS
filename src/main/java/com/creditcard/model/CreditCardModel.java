@@ -15,21 +15,18 @@ public class CreditCardModel {
 	private String id;
 	private String creditCardNumber;
 	private String accountNumber;
+	private String type;
 	private Double creditLimit;
 	private Double avalibleAmount;
 	private List<CcClient> ccClient;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ss")
-	private Date dateCreatedAt;
-
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ss")
-	private Date dateLastModified;
-	
+	private Date createdAt;
 	
 	public CreditCardModel() {
 		
-		this.dateCreatedAt = new Date();
-		this.dateLastModified = new Date();
+		this.createdAt = new Date();
+		
 	}
 
 	public String getId() {
@@ -80,20 +77,20 @@ public class CreditCardModel {
 		this.ccClient = ccClient;
 	}
 
-	public Date getDateCreatedAt() {
-		return dateCreatedAt;
+	public Date getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setDateCreatedAt(Date dateCreatedAt) {
-		this.dateCreatedAt = dateCreatedAt;
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 
-	public Date getDateLastModified() {
-		return dateLastModified;
+	public String getType() {
+		return type;
 	}
 
-	public void setDateLastModified(Date dateLastModified) {
-		this.dateLastModified = dateLastModified;
+	public void setType(String type) {
+		this.type = type;
 	}
-
+	
 }

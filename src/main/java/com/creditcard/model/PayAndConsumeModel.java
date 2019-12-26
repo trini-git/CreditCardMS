@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class PayAndConsumeModel {
 
-	
 	private String id;
 	private String creditCardNumber;
 	private String type;
