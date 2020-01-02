@@ -15,7 +15,7 @@ import com.creditcard.service.CreditCardService;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/credit-card")
+//@RequestMapping("/credit-card")
 public class CreditCardController {
 	
 	@Autowired
@@ -25,6 +25,13 @@ public class CreditCardController {
 	public Mono<CreditCardModel> findByCreditCardNumber (@PathVariable String creditCardNumber){
 		
 		return creditCardService.findByCreditCardNumber(creditCardNumber);
+		
+	}
+	
+	@GetMapping("/find-by-document/{document}")
+	public Mono<CreditCardModel> findByDocument (@PathVariable String document){
+		
+		return creditCardService.findByDocument(document);
 		
 	}
 	
@@ -46,6 +53,13 @@ public class CreditCardController {
 	public Mono<CreditCardModel> updatePayAvalibleAmount (@RequestBody CreditCardModel creditCardModel){
 		
 		return creditCardService.updatePayAvalibleAmount(creditCardModel);
+		
+	}
+	
+	@PutMapping("/update")
+	public Mono<CreditCardModel> updateAmountCc (@RequestBody CreditCardModel creditCardModel){
+		
+		return creditCardService.updateAmountCc(creditCardModel);
 		
 	}
 }

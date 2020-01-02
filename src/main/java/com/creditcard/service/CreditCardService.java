@@ -1,13 +1,15 @@
 package com.creditcard.service;
 
-import com.creditcard.model.BankAccount;
-import com.creditcard.model.CreditCardModel;
-import com.creditcard.repository.CreditCardRepositoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import com.creditcard.model.BankAccountMain;
+import com.creditcard.model.CreditCardModel;
+import com.creditcard.repository.CreditCardRepositoryInterface;
+
 import reactor.core.publisher.Mono;
 
 @Service
@@ -19,42 +21,42 @@ public class CreditCardService implements CreditCardServiceInterface {
   @Autowired
   CreditCardRepositoryInterface creditCardRepositoryInterface;
   
-  BankAccount bankAccount = new BankAccount();
+  BankAccountMain bankAccountMain = new BankAccountMain();
   
   /* Microservice that connects insertBankSavingAccount */
-  public Mono<BankAccount> insertBankAccount(BankAccount bankAccount) {
+  public Mono<BankAccountMain> insertCreditCard(BankAccountMain bankAccountMain) {
     return client.post()
-      .uri("/insert")
+      .uri("/insert-credit")
       .accept(MediaType.APPLICATION_JSON_UTF8)
       .contentType(MediaType.APPLICATION_JSON_UTF8)
-      .body(BodyInserters.fromObject(bankAccount))
+      .body(BodyInserters.fromObject(bankAccountMain))
       .retrieve()
-      .bodyToMono(BankAccount.class)
+      .bodyToMono(BankAccountMain.class)
       .switchIfEmpty(Mono.empty());
   }
   
   /* Microservice that connects insertBankSavingAccount */
-  public Mono<BankAccount> updateAmount(BankAccount bankAccount) {
+  public Mono<BankAccountMain> updateCreditAmount(BankAccountMain bankAccountMain) {
     return client.put()
-    .uri("/update-amount")
+    .uri("/update-credit-amount")
     .accept(MediaType.APPLICATION_JSON_UTF8)
     .contentType(MediaType.APPLICATION_JSON_UTF8)
-    .syncBody(bankAccount)
+    .syncBody(bankAccountMain)
     .retrieve()
-    .bodyToMono(BankAccount.class)
+    .bodyToMono(BankAccountMain.class)
     .switchIfEmpty(Mono.empty());
   }
 
   @Override
   public Mono<CreditCardModel> insertCreditCard(CreditCardModel creditCardModel) {
   
-    bankAccount.setCreditCardNumber(creditCardModel.getCreditCardNumber());
-    bankAccount.setAccountNumber(creditCardModel.getAccountNumber());
-    bankAccount.setCreditLimit(creditCardModel.getCreditLimit());
-    bankAccount.setAvalibleAmount(creditCardModel.getAvalibleAmount());
-    bankAccount.setCreatedAt(creditCardModel.getCreatedAt());
-        
-    return insertBankAccount(bankAccount).flatMap(x -> {
+    bankAccountMain.setCreditCardNumber(creditCardModel.getCreditCardNumber());
+    bankAccountMain.setCreditCardAccount(creditCardModel.getCreditCardAccount());
+    bankAccountMain.setCreditLimit(creditCardModel.getCreditLimit());
+    bankAccountMain.setAvalibleAmount(creditCardModel.getAvalibleAmount());
+    bankAccountMain.setCreatedAt(creditCardModel.getCreatedAt());
+    bankAccountMain.setType(creditCardModel.getType());    
+    return insertCreditCard(bankAccountMain).flatMap(x -> {
       return creditCardRepositoryInterface.save(creditCardModel);
     });
     
@@ -65,15 +67,15 @@ public class CreditCardService implements CreditCardServiceInterface {
     
     return findByCreditCardNumber(newCreditCardModel.getCreditCardNumber())
     .flatMap(oldCreditCardModel -> {
-      bankAccount.setCreditCardNumber(newCreditCardModel.getCreditCardNumber());
+      bankAccountMain.setCreditCardNumber(newCreditCardModel.getCreditCardNumber());
     
       double oldAvalibleAmount = oldCreditCardModel.getAvalibleAmount();
       double newAvalibleAmount = newCreditCardModel.getAvalibleAmount();
     
       if (oldAvalibleAmount >= newAvalibleAmount) {
         oldCreditCardModel.setAvalibleAmount(oldAvalibleAmount - newAvalibleAmount);
-        bankAccount.setAvalibleAmount(oldCreditCardModel.getAvalibleAmount());
-        return updateAmount(bankAccount).flatMap(x -> {
+        bankAccountMain.setAvalibleAmount(oldCreditCardModel.getAvalibleAmount());
+        return updateCreditAmount(bankAccountMain).flatMap(x -> {
           return creditCardRepositoryInterface.save(oldCreditCardModel);
         });       
       }
@@ -86,15 +88,15 @@ public class CreditCardService implements CreditCardServiceInterface {
   
     return findByCreditCardNumber(newCreditCardModel.getCreditCardNumber())
     .flatMap(oldCreditCardModel -> {
-      bankAccount.setCreditCardNumber(newCreditCardModel.getCreditCardNumber());
+      bankAccountMain.setCreditCardNumber(newCreditCardModel.getCreditCardNumber());
       double oldCreditLimit = oldCreditCardModel.getCreditLimit();
       double oldAvalibleAmount = oldCreditCardModel.getAvalibleAmount();
       double newAvalibleAmount = newCreditCardModel.getAvalibleAmount();
     
       if (oldAvalibleAmount + newAvalibleAmount <= oldCreditLimit) {
         oldCreditCardModel.setAvalibleAmount(oldAvalibleAmount + newAvalibleAmount);
-        bankAccount.setAvalibleAmount(oldCreditCardModel.getAvalibleAmount());
-        return updateAmount(bankAccount).flatMap(x -> {
+        bankAccountMain.setAvalibleAmount(oldCreditCardModel.getAvalibleAmount());
+        return updateCreditAmount(bankAccountMain).flatMap(x -> {
           return creditCardRepositoryInterface.save(oldCreditCardModel);
         });
       }
@@ -107,5 +109,21 @@ public class CreditCardService implements CreditCardServiceInterface {
 
     return creditCardRepositoryInterface.findByCreditCardNumber(creditCardNumber);
   }
+
+@Override
+public Mono<CreditCardModel> updateAmountCc(CreditCardModel creditCardModel) {
+	
+	return creditCardRepositoryInterface.findByCreditCardNumber(creditCardModel.getCreditCardNumber())
+		.flatMap(x -> {
+			x.setAvalibleAmount(creditCardModel.getAvalibleAmount());
+			return creditCardRepositoryInterface.save(x);
+		});
+}
+
+@Override
+public Mono<CreditCardModel> findByDocument(String document) {
+	
+	return creditCardRepositoryInterface.findByDocument(document);
+}
 
 }

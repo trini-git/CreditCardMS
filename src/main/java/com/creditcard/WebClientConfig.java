@@ -9,6 +9,6 @@ public class WebClientConfig {
 
   @Bean
   public WebClient registerWebClient() {
-    return WebClient.create("http://localhost:8007/credit-card");
+    return WebClient.create("http://localhost:8020/api/bankAccountMain");
   }
 }

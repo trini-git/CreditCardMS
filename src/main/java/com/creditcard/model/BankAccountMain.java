@@ -1,29 +1,23 @@
 package com.creditcard.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-public class BankAccount {
+public class BankAccountMain {
 
   private String id;
   private String creditCardNumber;
-  private String accountNumber;
+  private String creditCardAccount;
   private String type;
   private Double creditLimit;
   private Double avalibleAmount;
-
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ss")
-  private Date createdAt;
+  private String createdAt;
   
-  public BankAccount() {
-    
-    this.createdAt = new Date();
-  }
+//  public BankAccountMain() {
+//    
+//	  SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy hh:mm:ss"); 
+//	    this.createdAt = formatter.format(new Date());
+//  }
 
   public String getId() {
     return id;
@@ -41,15 +35,15 @@ public class BankAccount {
     this.creditCardNumber = creditCardNumber;
   }
 
-  public String getAccountNumber() {
-    return accountNumber;
-  }
+  public String getCreditCardAccount() {
+	return creditCardAccount;
+}
 
-  public void setAccountNumber(String accountNumber) {
-    this.accountNumber = accountNumber;
-  }
+public void setCreditCardAccount(String creditCardAccount) {
+	this.creditCardAccount = creditCardAccount;
+}
 
-  public Double getCreditLimit() {
+public Double getCreditLimit() {
     return creditLimit;
   }
 
@@ -65,12 +59,12 @@ public class BankAccount {
     this.avalibleAmount = avalibleAmount;
   }
 
-  public Date getCreatedAt() {
+  public String getCreatedAt() {
 	return createdAt;
 }
 
-public void setCreatedAt(Date createdAt) {
-	this.createdAt = createdAt;
+public void setCreatedAt(String string) {
+	this.createdAt = string;
 }
 
 public String getType() {
