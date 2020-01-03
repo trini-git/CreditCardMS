@@ -19,6 +19,7 @@ public class CreditCardModel {
 	private Double avalibleAmount;
 	private List<CcClient> ccClient;
 	private String createdAt;
+	private Bank bank;
 	
 	public CreditCardModel() {
 		
@@ -89,6 +90,14 @@ public class CreditCardModel {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public Bank getBank() {
+		return bank;
+	}
+
+	public void setBank(Bank bank) {
+		this.bank = bank;
 	}
 	
 }

@@ -55,7 +55,8 @@ public class CreditCardService implements CreditCardServiceInterface {
     bankAccountMain.setCreditLimit(creditCardModel.getCreditLimit());
     bankAccountMain.setAvalibleAmount(creditCardModel.getAvalibleAmount());
     bankAccountMain.setCreatedAt(creditCardModel.getCreatedAt());
-    bankAccountMain.setType(creditCardModel.getType());    
+    bankAccountMain.setType(creditCardModel.getType());
+    bankAccountMain.setBank(creditCardModel.getBank());
     return insertCreditCard(bankAccountMain).flatMap(x -> {
       return creditCardRepositoryInterface.save(creditCardModel);
     });

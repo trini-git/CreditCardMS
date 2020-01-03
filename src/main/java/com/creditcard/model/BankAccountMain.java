@@ -1,8 +1,5 @@
 package com.creditcard.model;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class BankAccountMain {
 
   private String id;
@@ -12,6 +9,7 @@ public class BankAccountMain {
   private Double creditLimit;
   private Double avalibleAmount;
   private String createdAt;
+  private Bank bank;
   
 //  public BankAccountMain() {
 //    
@@ -74,5 +72,13 @@ public String getType() {
   public void setType(String type) {
     this.type = type;
   }
-  
+
+public Bank getBank() {
+	return bank;
+}
+
+public void setBank(Bank bank) {
+	this.bank = bank;
+}
+    
 }
